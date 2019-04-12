@@ -12,18 +12,63 @@ const readFile = () =>
 
 const csvToJson = csvContent => csvContent.split("\n");
 
+const updateFile = newContent =>
+  new Promise((resolve, reject) =>
+    fs.writeFile("jokes.csv", newContent.join("\n"), err => {
+      if (err) {
+        reject(err);
+      }
+      resolve();
+    })
+  );
+
 const addJoke = newJoke =>
   new Promise((resolve, reject) => {
     readFile().then(jokes => {
       jokes.push(newJoke);
 
-      fs.writeFile("jokes.csv", jokes.join("\n"), err => {
-        if (err) {
-          reject(err);
-        }
-        resolve();
-      });
+      updateFile(jokes)
+        .then(() => resolve())
+        .catch(err => reject(err));
     });
   });
 
-export default { allJokes: () => readFile(), addJoke };
+const getById = id =>
+  new Promise(resolve => {
+    readFile().then(jokes => {
+      const requestedJoke = jokes[id];
+      resolve(requestedJoke);
+    });
+  });
+
+const deleteById = id =>
+  new Promise(resolve => {
+    readFile().then(jokes => {
+      // index is int, id is string, do not type ascert
+      const newJokes = jokes.filter((joke, index) => index != id);
+
+      updateFile(newJokes)
+        .then(() => resolve())
+        .catch(err => reject(err));
+    });
+  });
+
+const updateById = ({ id, joke }) =>
+  new Promise(resolve => {
+    readFile().then(jokes => {
+      const newJokes = jokes.map((originalJoke, index) =>
+        index == id ? joke : originalJoke
+      );
+
+      updateFile(newJokes)
+        .then(() => resolve())
+        .catch(err => reject(err));
+    });
+  });
+export default {
+  allJokes: () => readFile(),
+  addJoke,
+  getById,
+  deleteById,
+  updateById
+};
