@@ -2,9 +2,29 @@ import React, { Component } from "react";
 import "./App.css";
 
 class JokesList extends Component {
-  renderViewButton = index => {
-    return <button onClick={() => this.props.onSelect(index)}>View</button>;
+  state = {
+    newJoke: ""
   };
+  renderViewButton = index => (
+    <button onClick={() => this.props.onSelect(index)}>View</button>
+  );
+
+  handleNewJoke = e => {
+    this.setState({ newJoke: e.target.value });
+  };
+
+  renderAddButton = () => (
+    <button
+      disabled={this.state.newJoke === ""}
+      onClick={() => {
+        this.props.onNewJoke(this.state.newJoke);
+        this.setState({ newJoke: "" });
+      }}
+    >
+      Add
+    </button>
+  );
+
   render() {
     return (
       <div className="Jokes-List">
@@ -16,10 +36,22 @@ class JokesList extends Component {
             </tr>
           </thead>
           <tbody>
-            {this.props.jokes.map((joke, index) => (
-              <tr key={index}>
-                <td>{joke}</td>
-                <td>{this.renderViewButton(index)}</td>
+            <tr>
+              <td>
+                <input
+                  type="text"
+                  placeholder="type a new joke"
+                  value={this.state.newJoke}
+                  style={{ width: "100%" }}
+                  onChange={this.handleNewJoke}
+                />
+              </td>
+              <td>{this.renderAddButton()}</td>
+            </tr>
+            {this.props.jokes.map(({ value, id }) => (
+              <tr key={id}>
+                <td>{value}</td>
+                <td>{this.renderViewButton(id)}</td>
               </tr>
             ))}
           </tbody>

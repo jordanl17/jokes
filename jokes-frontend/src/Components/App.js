@@ -9,14 +9,18 @@ class App extends Component {
   state = {
     loaded: false,
     jokes: undefined,
-    selectedIndex: undefined
+    selectedId: undefined
   };
 
   componentDidMount = () => {
     axios
       .get("http://localhost:3050/jokes")
       .then(({ data: jokes }) => {
-        this.setState({ jokes, loaded: true }, () => console.log(this.state));
+        const jokesWithId = jokes.map((joke, index) => ({
+          value: joke,
+          id: index
+        }));
+        this.setState({ jokes: jokesWithId, loaded: true });
       })
       .catch(err => this.setState({ err }));
   };
@@ -26,29 +30,29 @@ class App extends Component {
       joke: newJokeContent
     };
     axios
-      .patch(
-        `http://localhost:3050/joke?id=${this.state.selectedIndex}`,
-        request
-      )
+      .patch(`http://localhost:3050/joke?id=${this.state.selectedId}`, request)
       .then(() => {
-        const { jokes, selectedIndex } = this.state;
-        let newJokes = [...jokes].map((joke, index) => {
-          return index !== selectedIndex ? joke : newJokeContent;
+        const { jokes, selectedId } = this.state;
+        let newJokes = [...jokes].map(({ value, id }) => {
+          return id !== selectedId
+            ? { value, id }
+            : { value: newJokeContent, id };
         });
         this.setState({
           jokes: newJokes
         });
-      });
+      })
+      .catch(err => console.log(err));
   };
 
   handleDelete = () => {
     axios
-      .delete(`http://localhost:3050/joke?id=${this.state.selectedIndex}`)
+      .delete(`http://localhost:3050/joke?id=${this.state.selectedId}`)
       .then(() => {
         const { jokes } = this.state;
         const newJokes = [];
-        [...jokes].forEach((joke, index) => {
-          if (index !== this.state.selectedIndex) {
+        [...jokes].forEach(joke => {
+          if (joke.id !== this.state.selectedId) {
             newJokes.push(joke);
           }
         });
@@ -61,28 +65,43 @@ class App extends Component {
       .catch(err => this.setState({ err }));
   };
 
-  handleSelect = index => {
-    this.setState({ selectedIndex: index });
+  handleSelect = id => {
+    this.setState({ selectedId: id });
   };
 
   getSelectedJoke = () => {
-    const { selectedIndex, jokes } = this.state;
-    return {
-      value: jokes[selectedIndex],
-      index: selectedIndex
+    const { selectedId, jokes } = this.state;
+    return jokes.find(({ id }) => id === selectedId);
+  };
+
+  handleNewJoke = newJokeContent => {
+    const request = {
+      joke: newJokeContent
     };
+    axios.post("http://localhost:3050/joke", request).then(() => {
+      const { jokes } = this.state;
+      const newJokes = [{ value: newJokeContent, id: jokes.length }, ...jokes];
+
+      this.setState({
+        jokes: newJokes
+      });
+    });
   };
 
   renderViews = () => {
-    const { selectedIndex, jokes } = this.state;
+    const { selectedId, jokes } = this.state;
 
     return (
       <React.Fragment>
-        <JokesList jokes={jokes} onSelect={this.handleSelect} />
-        {selectedIndex !== undefined ? (
+        <JokesList
+          jokes={jokes}
+          onSelect={this.handleSelect}
+          onNewJoke={this.handleNewJoke}
+        />
+        {selectedId !== undefined ? (
           <JokesDetail
             joke={this.getSelectedJoke()}
-            selectedIndex={selectedIndex}
+            selectedIndex={selectedId}
             onUpdate={this.handleUpdate}
             onDelete={this.handleDelete}
           />
