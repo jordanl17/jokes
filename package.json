@@ -4,18 +4,15 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "npx babel-node ./src/index.js"
+    "test": "npm run test:server",
+    "start:server": "npm start --prefix ./server",
+    "test:server": "npm t --prefix ./server",
+    "start:frontend": "npm start --prefix ./jokes-frontend",
+    "start": "concurrently \"npm run start:server\" \"npm run start:frontend\""
   },
   "author": "",
   "license": "ISC",
-  "dependencies": {
-    "body-parser": "^1.18.3",
-    "csv-parse": "^1.2.0",
-    "express": "^4.15.2"
-  },
   "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-preset-env": "^1.7.0"
+    "concurrently": "^4.1.0"
   }
 }
