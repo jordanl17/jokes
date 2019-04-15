@@ -1,6 +1,4 @@
-server/node_modules/
-jokes-frontend/node_modules/
-node_modules/
+/node_modules
 
 .git
 npm-debug.log
