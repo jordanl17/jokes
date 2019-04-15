@@ -10,7 +10,7 @@ In the project directory, you can run:
 
 ### `npm start`
 
-This starts an express server on port 8050; and opens a React app on port 3000
+This starts an express server on port 3050; and opens a React app on port 3000
 
 ### `cd server > npm test`
 
