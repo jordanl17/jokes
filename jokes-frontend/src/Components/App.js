@@ -80,15 +80,21 @@ class App extends Component {
     const request = {
       joke: newJokeContent
     };
-    axios.post("http://localhost:3050/joke", request).then(() => {
-      const { jokes } = this.state;
-      const newJokes = [{ value: newJokeContent, id: jokes.length }, ...jokes];
+    axios
+      .post("http://localhost:3050/joke", request)
+      .then(() => {
+        const { jokes } = this.state;
+        const newJokes = [
+          { value: newJokeContent, id: jokes.length },
+          ...jokes
+        ];
 
-      this.setState({
-        error: null,
-        jokes: newJokes
-      });
-    });
+        this.setState({
+          error: null,
+          jokes: newJokes
+        });
+      })
+      .catch(({ message: error }) => this.setState({ error }));
   };
 
   renderViews = () => {
