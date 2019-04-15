@@ -64,7 +64,7 @@ class App extends Component {
           error: null
         });
       })
-      .catch(({ messgae: error }) => this.setState({ error }));
+      .catch(({ message: error }) => this.setState({ error }));
   };
 
   handleSelect = id => {

@@ -34,6 +34,11 @@
   border-bottom: grey;
 }
 
+.Error-Banner {
+  background-color: red;
+  color: white;
+}
+
 @keyframes App-logo-spin {
   from {
     transform: rotate(0deg);
