@@ -2,7 +2,7 @@
 
 ## npm install
 
-Please cd into both f jokes-frontend and server before running npm install. Please also run npm install at the root to ensure that all dependencies have been installed.
+Please cd into both of jokes-frontend and server before running npm install. Please also run npm install at the root to ensure that all dependencies have been installed.
 
 ## Available Scripts
 
