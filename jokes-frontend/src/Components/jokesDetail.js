@@ -16,7 +16,6 @@ class JokesDetail extends Component {
   };
 
   static getDerivedStateFromProps(nextProps, prevState) {
-    console.log("derive", nextProps, prevState);
     if (!prevState) {
       return { joke: nextProps.joke };
     } else if (!nextProps.joke) {

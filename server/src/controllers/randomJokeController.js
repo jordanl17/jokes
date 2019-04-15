@@ -1,10 +1,13 @@
 import fileService from "../services/fileService";
 
 const randomJoke = (req, res) => {
-  console.log("random");
   fileService
     .allJokes()
     .then(jokes => {
+      if (req.query.filter) {
+        // filter out jokes container the filter substring
+        jokes = jokes.filter(joke => joke.includes(req.query.filter));
+      }
       const randomIndex = Math.floor(Math.random() * jokes.length);
       res.status(200);
       res.send(jokes[randomIndex]);

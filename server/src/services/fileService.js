@@ -4,7 +4,7 @@ const readFile = () =>
   new Promise((resolve, reject) => {
     var data = "";
     var readStream = fs.createReadStream("jokes.csv", "utf8");
-    console.log("read file");
+
     readStream.on("data", chunk => (data += chunk));
     readStream.on("end", () => resolve(csvToJson(data)));
     readStream.on("error", err => reject(err));

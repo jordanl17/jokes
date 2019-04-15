@@ -22,7 +22,7 @@ class App extends Component {
         }));
         this.setState({ jokes: jokesWithId, loaded: true });
       })
-      .catch(err => this.setState({ err }));
+      .catch(({ message: error }) => this.setState({ error }));
   };
 
   handleUpdate = newJokeContent => {
@@ -39,10 +39,11 @@ class App extends Component {
             : { value: newJokeContent, id };
         });
         this.setState({
+          error: null,
           jokes: newJokes
         });
       })
-      .catch(err => console.log(err));
+      .catch(({ message: error }) => this.setState({ error }));
   };
 
   handleDelete = () => {
@@ -59,10 +60,11 @@ class App extends Component {
 
         this.setState({
           jokes: newJokes,
-          selectedIndex: undefined
+          selectedId: undefined,
+          error: null
         });
       })
-      .catch(err => this.setState({ err }));
+      .catch(({ messgae: error }) => this.setState({ error }));
   };
 
   handleSelect = id => {
@@ -83,6 +85,7 @@ class App extends Component {
       const newJokes = [{ value: newJokeContent, id: jokes.length }, ...jokes];
 
       this.setState({
+        error: null,
         jokes: newJokes
       });
     });
@@ -113,10 +116,11 @@ class App extends Component {
   };
 
   render() {
-    const { loaded } = this.state;
+    const { loaded, error } = this.state;
     return (
       <div className="App">
-        {loaded ? this.renderViews() : <div>loading...</div>}
+        {error ? <div className="Error-Banner">{error}</div> : null}
+        {loaded ? this.renderViews() : !error && <div>loading...</div>}
       </div>
     );
   }
